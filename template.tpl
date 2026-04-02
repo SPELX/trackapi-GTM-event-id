@@ -10,7 +10,7 @@ ___INFO___
 
 {
   "type": "VARIABLE",
-  "id": "cvt_trackapi_event_id",
+  "id": "cvt_temp_public_id",
   "version": 1,
   "securityGroups": [],
   "displayName": "TrackAPI - Event ID",
@@ -201,11 +201,6 @@ ___WEB_PERMISSIONS___
     "isRequired": true
   }
 ]
-
-
-___TESTS___
-
-scenarios: []
 
 
 ___NOTES___
