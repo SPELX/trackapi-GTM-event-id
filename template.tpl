@@ -10,14 +10,14 @@ ___INFO___
 
 {
   "type": "VARIABLE",
-  "id": "cvt_trackapi_event_id",
+  "id": "cvt_temp_public_id",
   "version": 1,
   "securityGroups": [],
   "displayName": "TrackAPI - Event ID",
-  "categories": ["ANALYTICS", "CONVERSION"],
+  "categories": ["ANALYTICS", "CONVERSIONS"],
   "brand": {
-    "displayName": "TrackAPI",
-    "id": "brand_trackapi"
+    "id": "brand_dummy",
+    "displayName": "TrackAPI"
   },
   "description": "Gera um event_id único por evento+rota com cache de 8s. Use no campo eventID da tag do Facebook Pixel para garantir deduplicação entre browser Pixel e TrackAPI CAPI.",
   "containerContexts": [
@@ -203,6 +203,11 @@ ___WEB_PERMISSIONS___
     "isRequired": true
   }
 ]
+
+
+___TESTS___
+
+scenarios: []
 
 
 ___NOTES___
