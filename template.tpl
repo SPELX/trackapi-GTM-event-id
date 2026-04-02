@@ -17,7 +17,7 @@ ___INFO___
   "categories": ["ANALYTICS", "CONVERSIONS"],
   "brand": {
     "id": "brand_dummy",
-    "displayName": "TrackAPI"
+    "displayName": ""
   },
   "description": "Gera um event_id único por evento+rota com cache de 8s. Use no campo eventID da tag do Facebook Pixel para garantir deduplicação entre browser Pixel e TrackAPI CAPI.",
   "containerContexts": [
@@ -67,8 +67,6 @@ if (!cache) {
 
 // Chave de cache: evento + pathname + querystring
 // Garante que o mesmo evento em rotas diferentes receba IDs distintos
-var ev = makeString(copyFromWindow('google_tag_manager') ? '' : '') ||
-         makeString(data['gtm.element'] ? data['gtm.element'] : '');
 
 // Lê evento diretamente do dataLayer via variável GTM padrão {{Event}}
 var eventName = makeString(data.event || 'unknown');
