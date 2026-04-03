@@ -109,46 +109,162 @@ ___WEB_PERMISSIONS___
         {
           "key": "keys",
           "value": {
-            "type": 1,
+            "type": 2,
             "listItem": [
               {
-                "type": 2,
-                "mapKey": ["key", "read", "write", "execute"],
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "key"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  },
+                  {
+                    "type": 1,
+                    "string": "execute"
+                  }
+                ],
                 "mapValue": [
-                  {"type": 1, "string": "_tapiEventIdCache"},
-                  {"type": 8, "boolean": true},
-                  {"type": 8, "boolean": true},
-                  {"type": 8, "boolean": false}
+                  {
+                    "type": 1,
+                    "string": "_tapiEventIdCache"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  }
                 ]
               },
               {
-                "type": 2,
-                "mapKey": ["key", "read", "write", "execute"],
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "key"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  },
+                  {
+                    "type": 1,
+                    "string": "execute"
+                  }
+                ],
                 "mapValue": [
-                  {"type": 1, "string": "location"},
-                  {"type": 8, "boolean": true},
-                  {"type": 8, "boolean": false},
-                  {"type": 8, "boolean": false}
+                  {
+                    "type": 1,
+                    "string": "location"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  }
                 ]
               },
               {
-                "type": 2,
-                "mapKey": ["key", "read", "write", "execute"],
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "key"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  },
+                  {
+                    "type": 1,
+                    "string": "execute"
+                  }
+                ],
                 "mapValue": [
-                  {"type": 1, "string": "location.pathname"},
-                  {"type": 8, "boolean": true},
-                  {"type": 8, "boolean": false},
-                  {"type": 8, "boolean": false}
+                  {
+                    "type": 1,
+                    "string": "location.pathname"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  }
                 ]
               },
               {
-                "type": 2,
-                "mapKey": ["key", "read", "write", "execute"],
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "key"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  },
+                  {
+                    "type": 1,
+                    "string": "execute"
+                  }
+                ],
                 "mapValue": [
-                  {"type": 1, "string": "location.search"},
-                  {"type": 8, "boolean": true},
-                  {"type": 8, "boolean": false},
-                  {"type": 8, "boolean": false}
+                  {
+                    "type": 1,
+                    "string": "location.search"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  }
                 ]
               }
             ]
@@ -157,7 +273,7 @@ ___WEB_PERMISSIONS___
       ]
     },
     "clientAnnotations": {
-      "isEditedByTemplateCreator": true
+      "isEditedByUser": true
     },
     "isRequired": true
   },
@@ -171,7 +287,7 @@ ___WEB_PERMISSIONS___
         {
           "key": "allowedKeys",
           "value": {
-            "type": 1,
+            "type": 2,
             "listItem": [
               {
                 "type": 1,
@@ -187,7 +303,7 @@ ___WEB_PERMISSIONS___
       ]
     },
     "clientAnnotations": {
-      "isEditedByTemplateCreator": true
+      "isEditedByUser": true
     },
     "isRequired": true
   }
