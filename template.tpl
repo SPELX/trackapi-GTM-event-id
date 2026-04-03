@@ -19,7 +19,7 @@ ___INFO___
     "id": "brand_trackapi",
     "displayName": "TrackAPI"
   },
-  "description": "Gera um event_id único por evento+rota com cache de 8s. Use no campo eventID da tag do Facebook Pixel para garantir deduplicação entre browser Pixel e TrackAPI CAPI.",
+  "description": "Generates a unique event_id per event+route with 8s cache. Use in the Facebook Pixel tag Event ID field to ensure deduplication between browser Pixel and TrackAPI CAPI.",
   "containerContexts": [
     "WEB"
   ],
@@ -33,10 +33,10 @@ ___TEMPLATE_PARAMETERS___
   {
     "type": "TEXT",
     "name": "ttl",
-    "displayName": "TTL do cache (ms)",
+    "displayName": "Cache TTL (ms)",
     "simpleValueType": true,
     "defaultValue": "8000",
-    "help": "Tempo em milissegundos para reutilizar o mesmo event_id para o mesmo evento+rota. Padrão: 8000 (8s). Necessário para SPAs (React, Next.js, Vue) que podem disparar o mesmo evento duas vezes em um único ciclo de render.",
+    "help": "Time in milliseconds to reuse the same event_id for the same event+route. Default: 8000 (8s). Required for SPAs (React, Next.js, Vue) that may fire the same event twice in a single render cycle.",
     "valueValidators": [
       {
         "type": "POSITIVE_NUMBER"
@@ -58,22 +58,16 @@ var Object = require('Object');
 
 var ttl = makeNumber(data.ttl) || 8000;
 
-// Inicializa cache global na primeira execução
 var cache = copyFromWindow('_tapiEventIdCache');
 if (!cache) {
   cache = {};
   setInWindow('_tapiEventIdCache', cache, true);
 }
 
-// Chave de cache: evento + pathname + querystring
-// Garante que o mesmo evento em rotas diferentes receba IDs distintos
-
-// Lê evento diretamente do dataLayer via variável GTM padrão {{Event}}
 var eventName = makeString(data.event || 'unknown');
 var path = '';
 var qs = '';
 
-// Lê localização atual (se disponível no contexto sandboxed)
 var loc = copyFromWindow('location');
 if (loc) {
   path = makeString(loc.pathname || '');
@@ -83,7 +77,6 @@ if (loc) {
 var key = eventName + '|' + path + '|' + qs;
 var now = getTimestampMillis();
 
-// Remove entradas expiradas do cache
 var keys = Object.keys(cache);
 for (var i = 0; i < keys.length; i++) {
   var k = keys[i];
@@ -92,12 +85,10 @@ for (var i = 0; i < keys.length; i++) {
   }
 }
 
-// Reutiliza ID se o mesmo evento+rota disparou dentro do TTL
 if (cache[key] && (now - cache[key].time < ttl)) {
   return cache[key].id;
 }
 
-// Gera novo ID único
 var rand = generateRandom(0, 9999999999).toString(36);
 var newId = 'evt_' + now + '_' + rand;
 cache[key] = { id: newId, time: now };
@@ -205,38 +196,14 @@ ___WEB_PERMISSIONS___
 
 ___NOTES___
 
-## TrackAPI - Event ID — GTM Variable Template
+TrackAPI - Event ID - GTM Variable Template
 
-Gera um `event_id` único com cache por evento+rota. Projetado para garantir deduplicação
-entre Facebook browser Pixel e TrackAPI CAPI (Conversions API).
+Generates a unique event_id with per-event+route cache. Designed to ensure
+deduplication between Facebook browser Pixel and TrackAPI CAPI.
 
-### Como usar
+How to use:
+1. Import this template as a Variable in GTM
+2. In the Facebook Pixel tag, set Event ID to {{TrackAPI - Event ID}}
+3. TrackAPI SDK reads the same event_id from dataLayer and sends it to CAPI
 
-1. Importe este template como Variável no GTM
-2. Na tag do **Facebook Pixel**, configure:
-   - Campo "Event ID" → {{TrackAPI - Event ID}}
-3. O TrackAPI SDK lê o mesmo event_id do dataLayer e o envia ao CAPI automaticamente
-
-### Por que o cache de 8s?
-
-Em SPAs (React, Next.js, Vue), um único evento de usuário pode disparar duas tags GTM
-no mesmo ciclo — por exemplo, um PageView de SPA e um trigger de formulário.
-O cache garante que ambas as tags usem o mesmo event_id dentro da janela de 8s,
-permitindo deduplicação correta no Meta Events Manager.
-
-### Se o dataLayer.push() já inclui event_id
-
-Se o seu código já faz dataLayer.push({ event_id: 'evt_...' }), você pode usar
-uma Variável de Camada de Dados simples apontando para "event_id" em vez deste template.
-Este template é ideal para quem não controla o event_id no código do site.
-
-### Integração com TrackAPI SDK
-
-O TrackAPI SDK intercepta o dataLayer e, se encontrar event_id no push, usa o mesmo
-valor para o envio CAPI. Se não encontrar, gera um novo automaticamente.
-Para deduplicação perfeita, garanta que o mesmo event_id chegue ao Pixel browser
-(via esta variável) e ao CAPI (via SDK).
-
-### Documentação completa
-
-https://trackapi.app.br/docs/sdk
+Documentation: https://trackapi.app.br/docs/sdk
