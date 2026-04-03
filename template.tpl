@@ -1,4 +1,4 @@
-___TERMS_OF_SERVICE___
+﻿___TERMS_OF_SERVICE___
 
 By creating or modifying this file you agree to Google Tag Manager's Community
 Template Gallery Developer Terms of Service available at
@@ -9,21 +9,19 @@ Google may provide), as modified from time to time.
 ___INFO___
 
 {
-  "type": "VARIABLE",
+  "type": "MACRO",
   "id": "cvt_temp_public_id",
   "version": 1,
   "securityGroups": [],
   "displayName": "TrackAPI - Event ID",
-  "categories": ["ANALYTICS", "CONVERSIONS"],
-  "brand": {
-    "id": "brand_trackapi",
-    "displayName": "TrackAPI"
-  },
   "description": "Generates a unique event_id per event+route with 8s cache. Use in the Facebook Pixel tag Event ID field to ensure deduplication between browser Pixel and TrackAPI CAPI.",
+  "categories": [
+    "UTILITY",
+    "ANALYTICS"
+  ],
   "containerContexts": [
     "WEB"
-  ],
-  "termsOfServiceVersion": "1"
+  ]
 }
 
 
@@ -54,7 +52,8 @@ var getTimestampMillis = require('getTimestampMillis');
 var generateRandom = require('generateRandom');
 var makeString = require('makeString');
 var makeNumber = require('makeNumber');
-var Object = require('Object');
+var getUrl = require('getUrl');
+var ObjectApi = require('Object');
 
 var ttl = makeNumber(data.ttl) || 8000;
 
@@ -65,32 +64,29 @@ if (!cache) {
 }
 
 var eventName = makeString(data.event || 'unknown');
-var path = '';
-var qs = '';
-
-var loc = copyFromWindow('location');
-if (loc) {
-  path = makeString(loc.pathname || '');
-  qs = makeString(loc.search || '');
-}
+var path = makeString(getUrl('path') || '');
+var qs = makeString(getUrl('query') || '');
 
 var key = eventName + '|' + path + '|' + qs;
 var now = getTimestampMillis();
 
-var keys = Object.keys(cache);
+var keys = ObjectApi.keys(cache);
+var clean = {};
 for (var i = 0; i < keys.length; i++) {
   var k = keys[i];
-  if (now - cache[k].time > ttl) {
-    delete cache[k];
+  if (now - cache[k].time <= ttl) {
+    clean[k] = cache[k];
   }
 }
+cache = clean;
+setInWindow('_tapiEventIdCache', cache, true);
 
 if (cache[key] && (now - cache[key].time < ttl)) {
   return cache[key].id;
 }
 
-var rand = generateRandom(0, 9999999999).toString(36);
-var newId = 'evt_' + now + '_' + rand;
+var rand = makeString(generateRandom(0, 2147483647));
+var newId = 'evt_' + makeString(now) + '_' + rand;
 cache[key] = { id: newId, time: now };
 
 return newId;
@@ -149,123 +145,6 @@ ___WEB_PERMISSIONS___
                     "boolean": false
                   }
                 ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "key"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  },
-                  {
-                    "type": 1,
-                    "string": "execute"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "location"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "key"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  },
-                  {
-                    "type": 1,
-                    "string": "execute"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "location.pathname"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  }
-                ]
-              },
-              {
-                "type": 3,
-                "mapKey": [
-                  {
-                    "type": 1,
-                    "string": "key"
-                  },
-                  {
-                    "type": 1,
-                    "string": "read"
-                  },
-                  {
-                    "type": 1,
-                    "string": "write"
-                  },
-                  {
-                    "type": 1,
-                    "string": "execute"
-                  }
-                ],
-                "mapValue": [
-                  {
-                    "type": 1,
-                    "string": "location.search"
-                  },
-                  {
-                    "type": 8,
-                    "boolean": true
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  },
-                  {
-                    "type": 8,
-                    "boolean": false
-                  }
-                ]
               }
             ]
           }
@@ -280,24 +159,22 @@ ___WEB_PERMISSIONS___
   {
     "instance": {
       "key": {
-        "publicId": "read_data_layer",
+        "publicId": "get_url",
         "versionId": "1"
       },
       "param": [
         {
-          "key": "allowedKeys",
+          "key": "urlParts",
           "value": {
-            "type": 2,
-            "listItem": [
-              {
-                "type": 1,
-                "string": "event"
-              },
-              {
-                "type": 1,
-                "string": "event_id"
-              }
-            ]
+            "type": 1,
+            "string": "any"
+          }
+        },
+        {
+          "key": "queriesAllowed",
+          "value": {
+            "type": 1,
+            "string": "any"
           }
         }
       ]
@@ -308,6 +185,11 @@ ___WEB_PERMISSIONS___
     "isRequired": true
   }
 ]
+
+
+___TESTS___
+
+scenarios: []
 
 
 ___NOTES___
@@ -323,3 +205,5 @@ How to use:
 3. TrackAPI SDK reads the same event_id from dataLayer and sends it to CAPI
 
 Documentation: https://trackapi.app.br/docs/sdk
+
+
