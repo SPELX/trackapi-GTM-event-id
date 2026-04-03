@@ -1,5 +1,5 @@
 homepage: "https://trackapi.app.br"
 documentation: "https://trackapi.app.br/docs/sdk"
 versions:
-  - sha: 8d49d5f1a9d95650ba37219c8ce4c31ccabae51a
+  - sha: fc87ce528e46eed6e408d560773fda29f0b187a8
     changeNotes: Initial release.
