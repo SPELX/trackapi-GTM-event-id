@@ -14,7 +14,7 @@ ___INFO___
   "version": 1,
   "securityGroups": [],
   "displayName": "TrackAPI - Event ID",
-  "description": "Generates a unique event_id per event+route with 8s cache. Use in the Facebook Pixel tag Event ID field to ensure deduplication between browser Pixel and TrackAPI CAPI.",
+  "description": "Returns the event_id from the dataLayer push (SPA/Next.js) or generates one with 8s cache (traditional sites). Use in the Facebook Pixel tag Event ID field to ensure deduplication between browser Pixel and TrackAPI CAPI.",
   "categories": [
     "UTILITY",
     "ANALYTICS"
@@ -48,6 +48,7 @@ ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
 var copyFromWindow = require('copyFromWindow');
 var setInWindow = require('setInWindow');
+var copyFromDataLayer = require('copyFromDataLayer');
 var getTimestampMillis = require('getTimestampMillis');
 var generateRandom = require('generateRandom');
 var makeString = require('makeString');
@@ -55,6 +56,20 @@ var makeNumber = require('makeNumber');
 var getUrl = require('getUrl');
 var ObjectApi = require('Object');
 
+// Priority 1: read event_id from the dataLayer push.
+// In SPAs (Next.js, React), the PageViewTracker or trackEvent() puts the
+// event_id in the push — both the FB Pixel browser tag and the TrackAPI SDK
+// CAPI must use the SAME id for Meta deduplication. Without this check, the
+// template generates its own id (different from the push) and Meta sees two
+// events with distinct ids → counts both.
+var dlEventId = copyFromDataLayer('event_id');
+if (dlEventId) {
+  return makeString(dlEventId);
+}
+
+// Priority 2: generate a new id with per-event+route cache.
+// For traditional sites (WordPress, static pages) where autoPageView: true
+// handles PageViews and no event_id is present in the push.
 var ttl = makeNumber(data.ttl) || 8000;
 
 var cache = copyFromWindow('_tapiEventIdCache');
@@ -95,6 +110,43 @@ return newId;
 ___WEB_PERMISSIONS___
 
 [
+  {
+    "instance": {
+      "key": {
+        "publicId": "read_data_layer",
+        "versionId": "1"
+      },
+      "param": [
+        {
+          "key": "allowedKeys",
+          "value": {
+            "type": 2,
+            "listItem": [
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "key"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "event_id"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "clientAnnotations": {
+      "isEditedByUser": true
+    },
+    "isRequired": true
+  },
   {
     "instance": {
       "key": {
@@ -194,10 +246,18 @@ scenarios: []
 
 ___NOTES___
 
-TrackAPI - Event ID - GTM Variable Template
+TrackAPI - Event ID - GTM Variable Template (v2)
 
-Generates a unique event_id with per-event+route cache. Designed to ensure
-deduplication between Facebook browser Pixel and TrackAPI CAPI.
+Returns the event_id for Meta Pixel deduplication with TrackAPI CAPI.
+
+Priority:
+1. Reads event_id from the current dataLayer push (SPA/Next.js with
+   PageViewTracker or trackEvent() — the push already contains event_id)
+2. Falls back to generating a new id with per-event+route cache (traditional
+   sites with autoPageView: true — no event_id in the push)
+
+This ensures the FB Pixel browser tag and TrackAPI CAPI always use the same
+event_id, regardless of project type.
 
 How to use:
 1. Import this template as a Variable in GTM
