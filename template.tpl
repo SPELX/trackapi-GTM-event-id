@@ -11,7 +11,7 @@ ___INFO___
 {
   "type": "MACRO",
   "id": "cvt_temp_public_id",
-  "version": 2,
+  "version": 1,
   "securityGroups": [],
   "displayName": "TrackAPI - Event ID",
   "description": "Returns the event_id from the dataLayer push (SPA/Next.js) or generates one with 8s cache (traditional sites). Use in the Facebook Pixel tag Event ID field to ensure deduplication between browser Pixel and TrackAPI CAPI.",
