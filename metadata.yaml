@@ -1,5 +1,5 @@
 homepage: "https://trackapi.app.br"
-documentation: "https://trackapi.app.br/docs/sdk"
+documentation: "https://github.com/SPELX/trackapi-event-id"
 versions:
   - sha: c757b16e5d1d1f3a95d4061a11b3f542222cfd70
     changeNotes: Initial release.
