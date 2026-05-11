@@ -1,5 +1,7 @@
 homepage: "https://trackapi.app.br"
 documentation: "https://github.com/SPELX/trackapi-event-id"
 versions:
+  - sha: b1cc0b3f8672bc029b20efbe2bb1cc5cadc64a64
+    changeNotes: Fix documentation URL.
   - sha: c757b16e5d1d1f3a95d4061a11b3f542222cfd70
     changeNotes: Initial release.
